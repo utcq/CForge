@@ -1,0 +1,19 @@
+import llvm
+
+project.name = "MyProj"
+
+targets = [
+    "*.cpp"
+]
+
+ts.exclude = [
+    "test.cpp"
+]
+
+ts.dirs = [
+    "extra/"
+]
+
+scripts = {
+    "test": "ttks"
+}
