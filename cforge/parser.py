@@ -2,6 +2,9 @@ import ast
 
 class Parser():
     def __init__(self,source:str):
+        """
+Gets input configuration source code
+        """
         self.source=source.strip().splitlines()
         self.line=self.source[0]
         self.linepos=0
@@ -12,12 +15,18 @@ class Parser():
         ]
 
     def advance(self)->str:
+        """
+Goto next line
+        """
         self.linepos+=1
         if (self.linepos<len(self.source)):
             self.line=self.source[self.linepos]
         return self.line
 
     def parse(self)->dict:
+        """
+Actual Parser that checks for statements
+        """
         self.source.append(None)
         while (self.line != None):
             if self.line.startswith("import"):
@@ -30,18 +39,26 @@ class Parser():
         return self.res
 
     def parse_import(self)->None:
+        """
+Parsing importing libs
+        """
         self.res.append({
         "mod": "import",
         "val": ' '.join(self.line.split(" ")[1:]).strip()
         })
     
     def parse_project(self)->None:
+        """
+Parser project arguments
+        """
         self.res[0]["project"][
             self.line.split(".")[1].split("=")[0].strip()
         ]='='.join(self.line.split("=")[1:]).strip()[1:-1]
     
     def parse_common(self) -> None:
-        ts = {}
+        """
+Parse python-like variables
+        """
         if self.line == '':
             return None
         checking = True
@@ -56,9 +73,11 @@ class Parser():
             elif ('[' in self.line):
                 bracket = True
                 checking = False
-                count += 1
+                count += 1                
             res += self.line
-            self.advance()
+        if (']' in self.line and bracket): count-=1; res=self.line
+        if ('}' in self.line and not bracket): count-=1; res=self.line
+        self.advance()
         while (self.line != None and count != 0):
             if ('{' in self.line and not bracket):
                 count += 1

@@ -1,19 +1,22 @@
-import llvm
+import curl
 
 project.name = "MyProj"
+
+
+ts.exclude = [
+    "test.cpp"
+]
 
 targets = [
     "*.cpp"
 ]
 
-ts.exclude = [
-    "test.cpp"
-]
+args = []
 
 ts.dirs = [
     "extra/"
 ]
 
 scripts = {
-    "test": "ttks"
+    "test": "echo hello"
 }
