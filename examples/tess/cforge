@@ -1,0 +1,9 @@
+
+project.name="Your_Project_Name"
+
+targets=[
+    "*.c*"
+]
+
+import lua
+program git

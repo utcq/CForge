@@ -17,6 +17,10 @@ ts.dirs = [
     "extra/"
 ]
 
+ts.ldirs= [
+    
+]
+
 scripts = {
     "test": "echo hello"
 }

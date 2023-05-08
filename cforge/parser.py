@@ -31,6 +31,8 @@ Actual Parser that checks for statements
         while (self.line != None):
             if self.line.startswith("import"):
                 self.parse_import()
+            elif self.line.startswith("program"):
+                self.parse_program()
             elif self.line.startswith("project."):
                 self.parse_project()
             else:
@@ -46,6 +48,13 @@ Parsing importing libs
         "mod": "import",
         "val": ' '.join(self.line.split(" ")[1:]).strip()
         })
+
+    def parse_program(self)->None:
+        self.res.append({
+        "mod": "program",
+        "val": ' '.join(self.line.split(" ")[1:]).strip()
+        })
+
     
     def parse_project(self)->None:
         """

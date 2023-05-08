@@ -36,7 +36,12 @@ Parse library import and raise error if there isn't the lib
         """
         res=Checker.lib(lname)
         if res: return f'-l{lname}'
-        else: raise Exception("BLAH BVL")
+        else: raise Exception(f"Missing library: `{lname}`")
+
+    def check_program(self, prog):
+        res=system("which " + prog)
+        if res==1:
+            raise Exception(f"Missing program: `{prog}`")
 
     def parse(self)->list[str]:
         """
@@ -48,11 +53,12 @@ Turn the config ast to compiler arguments
             if "project" in arg: 
                 for par in arg['project']:
                     match par:
-                        case "name": args.append(f"-o {self.root+'build/'+self.arch+'/'+arg['project'][par]}")
+                        case "name": args.append(f"-o {'build/'+self.arch+'/'+arg['project'][par]}")
                         case _: pass
             else:
                 match arg["mod"]:
                     case "import":   args.append(self.p_lib(arg["val"]))
+                    case "program":  self.check_program(arg["val"])
                     case "common":
                         for part in arg:
                             match part:
@@ -63,7 +69,13 @@ Turn the config ast to compiler arguments
                                     if arg[part] != []: args.append(' '.join(arg[part]))
                                 case "dirs":
                                     for fold in arg[part]:
-                                        args.append(f'-I src/{fold}')
+                                        if fold.startswith("/"): args.append(f'-I {fold}')
+                                        else: args.append(f'-I {self.root}src/{fold}')
+
+                                case "ldirs":
+                                    for fold in arg[part]:
+                                        if fold.startswith("/"): args.append(f'-L {fold}')
+                                        else: args.append(f'-L {self.root}src/{fold}')
                                     
                                 case _: pass
                             
@@ -75,7 +87,7 @@ Actual execution engine
         """
 
         # -------------
-        Checker.ecreate(self.root+"build/"+self.arch+"/")
+        Checker.ecreate("build/"+self.arch+"/")
         # -------------
 
 
